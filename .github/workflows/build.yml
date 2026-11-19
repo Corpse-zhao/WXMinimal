@@ -1,0 +1,68 @@
+name: Theos cloud build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # GitHub-hosted macOS runner includes Xcode and Apple's iOS SDK.
+    runs-on: macos-14
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Prepare packaging tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          for formula in ldid dpkg xz; do
+            brew list --versions "$formula" >/dev/null || brew install "$formula"
+          done
+
+      - name: Install RootHide Theos
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --recurse-submodules https://github.com/roothide/theos.git "$RUNNER_TEMP/theos"
+          echo "THEOS=$RUNNER_TEMP/theos" >> "$GITHUB_ENV"
+
+      - name: Build package
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          make clean package 2>&1 | tee build.log
+          mkdir -p "$RUNNER_TEMP/package-artifacts"
+          python3 - <<'PY'
+          import os, pathlib, shutil
+          packages = list(pathlib.Path('packages').glob('*.deb'))
+          if not packages:
+              raise SystemExit('No Debian package generated')
+          dest = pathlib.Path(os.environ['RUNNER_TEMP']) / 'package-artifacts'
+          for package in packages:
+              shutil.copy2(package, dest / package.name)
+          PY
+
+      - name: Upload Debian package
+        uses: actions/upload-artifact@v4
+        with:
+          name: WXMinimal-diagnostic-${{ github.sha }}
+          path: ${{ runner.temp }}/package-artifacts/*.deb
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: WXMinimal-build-log-${{ github.sha }}
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7

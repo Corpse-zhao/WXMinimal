@@ -1,0 +1,8 @@
+Package: local.wxminimal.diagnostics
+Name: WXMinimal Diagnostics
+Version: 0.1.0
+Architecture: iphoneos-arm64e
+Description: Local-only runtime diagnostics. No anti-revoke implementation.
+Maintainer: WXMinimal Developer
+Author: WXMinimal Developer
+Section: Tweaks

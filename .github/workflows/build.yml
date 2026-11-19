@@ -9,7 +9,7 @@ permissions:
 jobs:
   build:
     # GitHub-hosted macOS runner includes Xcode and Apple's iOS SDK.
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - name: Check out project
         uses: actions/checkout@v4

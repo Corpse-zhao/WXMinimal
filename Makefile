@@ -12,7 +12,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = WXMinimal
 WXMinimal_FILES = Tweak.x
-WXMinimal_CFLAGS = -fobjc-arc -Wall -Wextra -Wno-arc-performSelector-leaks
+WXMinimal_CFLAGS = -fobjc-arc -Wall -Wextra -Wno-unused-parameter -Wno-arc-performSelector-leaks
 WXMinimal_FRAMEWORKS = Foundation UIKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk

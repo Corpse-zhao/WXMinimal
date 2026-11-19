@@ -1,8 +1,8 @@
 Package: local.wxminimal.diagnostics
-Name: WXMinimal Diagnostics
-Version: 0.1.0
+Name: WXMinimal Anti-Revoke
+Version: 0.2.0
 Architecture: iphoneos-arm64e
-Description: Local-only runtime diagnostics. No anti-revoke implementation.
+Description: WeChat 8.0.75 anti-revoke. Keeps recalled messages locally. Local-only, no network.
 Maintainer: WXMinimal Developer
 Author: WXMinimal Developer
 Section: Tweaks
